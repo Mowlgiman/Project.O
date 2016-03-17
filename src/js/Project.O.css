@@ -1,0 +1,42 @@
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+        }
+        .lorem {
+            font-style: italic;
+            color: #AAA;
+        }
+		.custom .leaflet-popup-tip,
+		.custom .leaflet-popup-content-wrapper {
+		background: #00aaff;
+		color: 	  #ffffff; /*white */;
+		font-size: medium;
+	}
+	#sidebar {
+	background: #00aaff /* dark blue*/;
+	color: #ffffff; /*light blue */
+	border-radius: 6px;
+}
+.sidebarbutton {
+    background-color: #008CBA; /* Blue */
+    border: none;
+	position: absolute; /*newly added*/
+    left: 10px; /*newly added*/
+    bottom: 10px;/*newly added*/
+	z-index: 10;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+	border-radius: 8px;
+}
+.buttonEffect:hover {
+    box-shadow: 0px 50px 50px 50px rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
