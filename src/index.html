@@ -1,0 +1,458 @@
+<!-- Written by Robert Besaans December 2015. The combination of Leaflet.js and associated plugins will be used as a trial to test on AWS, Embedded Survey Monkey and Google Analytics-->
+<!--<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project.O</title>
+	<link rel="icon" type="image/png" href="../Data/circle_32by32.png" sizes="32x32">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!--Leaflet-->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    
+    <!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.ie.css" /><![endif]-->
+	
+	<!--Font awesome-->
+	<link rel="stylesheet" href="../Font-Awesome-master/css/font-awesome.min.css" />
+	
+	<!--Jquery-->
+	<script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
+	
+	<!--OSM Geocoder (Search bar)-->
+	<link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css"/>
+	<script	 src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js"></script>
+	
+	<!--Bootstrap-->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	
+	<!--Awesome Markers-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="dist/leaflet.awesome-markers.css">
+	<script src="dist/leaflet.awesome-markers.js"></script>
+	
+	<!--Leaflet Extra Markers-->
+	<link rel="stylesheet" href="/Leaflet.ExtraMarkers/dist/css/leaflet.extra-markers.min.css">
+	<script src="/Leaflet.ExtraMarkers/dist/js/leaflet.extra-markers.min.js"></script>
+	
+	<!--Loading Regions file-->
+	<script type="text/javascript" src="../Data/NZRegions.json"></script>
+	
+	<!--Sidebar-->
+    <script src="../leaflet-sidebar-master/src/L.Control.Sidebar.js"></script>
+	<link rel="stylesheet" href="../leaflet-sidebar-master/src/L.Control.Sidebar.css" />
+	
+	<!--Moving Marker-->
+	<script type="text/javascript" src="../Leaflet.MovingMarker-master/MovingMarker.js"></script>
+
+	<!--Visual Clicks-->
+	<link rel="stylesheet" type="text/css" href="../Leaflet.VisualClick-master/src/L.VisualClick.css" />
+	<script src="../Leaflet.VisualClick-master/src/L.VisualClick.js"></script>
+
+	<!-- MiniMap -->
+	<link rel="stylesheet" href="/Leaflet-MiniMap-master/src/Control.MiniMap.css" />
+	<script src="/Leaflet-MiniMap-master/src/Control.MiniMap.js" type="text/javascript"></script>
+	
+	<!--Leaflet Loading-->
+    <link rel="stylesheet" href="https://rawgithub.com/ebrelsford/Leaflet.loading/master/src/Control.Loading.css" />
+    <script src="https://rawgithub.com/ebrelsford/Leaflet.loading/master/src/Control.Loading.js"></script>
+
+	<!--Locate Plugin-->
+	<link rel"stylesheet" href = "Leaflet-locatecontrol/dist/L.Control.Locate.min.css">
+	<script src="L.Control.Locate.min.js"></script>
+	
+	<!--Marker Clustering-->
+	<link rel="stylesheet" href="/Leaflet.markercluster/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	<script src="/Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+	
+	<!--Sweet Alert - Modal Information Window-->
+	<script src="/SweetAlert-master/dist/sweetalert.min.js"></script> 
+	<link rel="stylesheet" type="text/css" href="/SweetAlert-master/dist/sweetalert.css">
+	
+	<!-- Google Analytics -->
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-72554022-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+	<!-- End Google Analytics -->
+	
+	<!--Leaflet Context Menu-->
+	<script src="../Leaflet.contextmenu-master/dist/leaflet.contextmenu.js"></script>
+	<link rel="stylesheet" href="../Leaflet.contextmenu-master/dist/leaflet.contextmenu.css"/>
+	
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+        }
+        .lorem {
+            font-style: italic;
+            color: #AAA;
+        }
+		.custom .leaflet-popup-tip,
+		.custom .leaflet-popup-content-wrapper {
+		background: #00aaff;
+		color: 	  #ffffff; /*white */;
+		font-size: medium;
+	}
+	#sidebar {
+	background: #00aaff /* dark blue*/;
+	color: #ffffff; /*light blue */
+	border-radius: 6px;
+}
+.sidebarbutton {
+    background-color: #008CBA; /* Blue */
+    border: none;
+	position: absolute; /*newly added*/
+    left: 10px; /*newly added*/
+    bottom: 10px;/*newly added*/
+	z-index: 10;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+	border-radius: 8px;
+}
+.buttonEffect:hover {
+    box-shadow: 0px 50px 50px 50px rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+    </style>
+</head>
+<body>
+  
+  
+  
+    <div id="sidebar">
+        <h2>Survey Project.O</h2>
+
+<iframe src="https://docs.google.com/forms/d/19bGnBfv0T39dBFWHoHW4PzfqO74ZuNKqzxftNDC59SU/viewform?embedded=true" width="400" height="490" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+		
+		
+		</div>
+
+    <div id="map"></div>
+
+	<button class= "sidebarbutton buttonEffect" type="button" id="sidebarbuttonID">Survey?</button>
+   
+	
+    <script>
+			
+	//Atribution links
+		var osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>',
+			esriLink = '<a href="http://www.esri.com/">Esri</a>',
+			darkMatterLink = '<a href="http://cartodb.com/">CartoDB</a>'
+		//Tile-service links
+		var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			osmAttrib = '&copy; ' + osmLink + ' Contributors',
+			esriUrl = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+			esriAttrib = '&copy; '+osmLink+' Contributors & ' +esriLink,
+			darkMatterUrl = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+			darkMatterAttrib = '&copy; ' + osmLink + ' Contributors' + darkMatterLink;
+		
+		//combining attribution and tile service links into seperate variables 
+		var osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib}),
+			esriMap = L.tileLayer(esriUrl, {attribution: esriAttrib}),
+			darkMap = L.tileLayer(darkMatterUrl, {attribution: darkMatterAttrib});
+			
+		
+		//functions
+		 function showCoordinates (e) {
+	      alert(e.latlng);
+		  }
+		  function centerMap (e) {
+			  map.panTo(e.latlng);
+		  }
+		  function zoomIn (e) {
+			  map.zoomIn();
+		  }
+		  function zoomOut (e) {
+			  map.zoomOut();
+		  }
+		
+		
+		
+		//Map object	
+		var map = L.map('map', {
+				layers: [esriMap], // only add one!
+				zoomControl: false,
+				loadingControl: true,
+				contextmenu: true,
+				contextmenuWidth: 140,
+				contextmenuItems: [{
+					text: 'Show coordinates',
+					callback: showCoordinates
+				}, {
+					text: 'Center map here',
+					callback: centerMap
+				}, '-', {
+					text: 'Zoom in',
+					icon: '../Leaflet.contextmenu-master/examples/images/zoom-in.png',
+					callback: zoomIn
+				}, {
+					text: 'Zoom out',
+					icon: '../Leaflet.contextmenu-master/examples/images/zoom-out.png',
+					callback: zoomOut
+				}]
+			})
+			.setView([-40.99, 173.36,], 5);
+			
+			
+		// Alias for basemaps in the basemap selector
+		var baseLayers = {
+			"Hit The Streets": osmMap,
+			"Eye In The Sky": esriMap,
+			"Dark As The Night" : darkMap
+		};
+		
+		//Control for basemap selector
+		L.control.layers(baseLayers,null,{position: 'topright'}).addTo(map);
+	
+	//MiniMap Magic Note that you cannot use the same layer object again, as that will confuse the two map controls
+		var osm2 = new L.TileLayer(esriUrl, {minZoom: 0, maxZoom: 13, attribution: osmAttrib });
+		var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true , height: 75, width: 100}).addTo(map);
+		//Open Street Map Geocoder (Search Functionality)			
+		var osmGeocoder = new L.Control.OSMGeocoder({
+				collapsed: true,
+				position: 'topright',
+				text: 'Go!',
+				});
+			map.addControl(osmGeocoder);	
+        var sidebar = L.control.sidebar('sidebar', {
+            closeButton: true,
+            position: 'left'
+        });
+        map.addControl(sidebar);
+		setTimeout(function () {
+            sidebar.hide();
+        }, 10);
+    
+    // specify popup options 
+    var customOptions =
+        {
+        'className' : 'custom'
+        }
+		
+		
+		
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
+		//Leaflet Extra Markers
+		
+		var Marker1 = L.ExtraMarkers.icon({
+		icon: 'fa-ship',
+		markerColor: 'blue-dark',
+		iconColor: '#00004d',
+		shape: 'penta',
+		prefix: 'fa'
+		});
+		//e.g.   L.marker([-34.72200292037288,172.9306411743164], {icon: Marker1,}).addTo(map).bindPopup("Ninety Mile Beach", customOptions);
+		
+		var Marker2 = L.ExtraMarkers.icon({
+		icon: 'fa-life-ring',
+		markerColor: 'blue',
+		iconColor: 'white',
+		shape: 'penta',
+		prefix: 'fa'
+		});
+		var Marker3 = L.ExtraMarkers.icon({
+		icon: 'fa-picture-o',
+		markerColor: 'purple',
+		iconColor: 'white',
+		shape: 'square',
+		prefix: 'fa'
+		});
+		
+		var Marker4 = L.ExtraMarkers.icon({
+		icon: 'fa-flag-o',
+		markerColor: 'orange',
+		iconColor: 'black',
+		shape: 'square',
+		prefix: 'fa'
+		});
+		var Marker5 = L.ExtraMarkers.icon({
+		icon: 'fa-tree',
+		markerColor: 'green',
+		iconColor: '#004d00',
+		shape: 'star',
+		prefix: 'fa'
+		});
+			
+		var Marker6 = L.ExtraMarkers.icon({
+		icon: 'fa-map-signs',
+		markerColor: 'red',
+		iconColor: 'black',
+		shape: 'star',
+		prefix: 'fa'
+		});
+		
+		var Marker7 = L.ExtraMarkers.icon({
+		icon: 'fa-arrows-v',
+		markerColor: 'violet',
+		iconColor: '#b3d9ff',
+		shape: 'circle',
+		prefix: 'fa'
+		});
+		
+		var Marker8 = L.ExtraMarkers.icon({
+		icon: 'fa-fire',
+		markerColor: 'black',
+		iconColor: '#ff3300',
+		shape: 'star',
+		prefix: 'fa'
+		});
+		
+		var Marker9 = L.ExtraMarkers.icon({
+		icon: 'fa-anchor',
+		markerColor: 'blue',
+		iconColor: '#00004d',
+		shape: 'penta',
+		prefix: 'fa'
+		});
+		
+		var Marker10 = L.ExtraMarkers.icon({
+		icon: 'fa-home',
+		markerColor: 'white',
+		iconColor: '#800000',
+		shape: 'penta',
+		prefix: 'fa'
+		});
+		
+		var Marker11 = L.ExtraMarkers.icon({
+		icon: 'fa-smile-o',
+		markerColor: 'green-dark',
+		iconColor: '#b3ff1a',
+		shape: 'circle',
+		prefix: 'fa'
+		});
+		var MarkerMilford = L.marker([-44.667065773372826,167.91555404663086], {icon:  Marker11,}).addTo(map).bindPopup("Milford Sound", customOptions);
+		MarkerMilford.on('click', function() {
+			// sends notification to your Google Analytics account
+			ga('send', 'event', 'marker', 'click', 'Milford Sounds');
+			console.log('event has propogated');
+		});
+		
+		var MountMarker = L.marker([-37.63027526656039, 176.1716079711914], {icon: L.AwesomeMarkers.icon({icon: 'spinner', markerColor: 'red', prefix: 'fa', spin:true}) }).bindPopup("Mount Muangunui", customOptions);
+		MountMarker.on('click', function() {
+			// sends notification to your Google Analytics account
+			ga('send', 'event', 'marker', 'click', 'Mount Marker');
+			console.log('event has propogated');
+		});
+	
+	var MarlMarker = L.marker([-41.26300124555556,173.9582061767578], {icon: L.AwesomeMarkers.icon({icon: 'circle-o-notch', markerColor: 'orange', prefix: 'fa', iconColor: 'black', spin: true}) }).bindPopup("Marlborough Sounds",customOptions);
+		MarlMarker.on('click', function() {
+		   // sends notification to your Google Analytics account
+		   ga('send', 'event', 'marker', 'click', 'Marlborough Sounds Marker');
+		});
+	var FranzMarker = L.marker([-46.83389173208537,168.22059631347653], {icon: L.AwesomeMarkers.icon({icon: 'cog',  prefix: 'fa', markerColor: 'purple', iconColor: '#6b1d5c', spin: true }) }).bindPopup("Great White Shark Cage Diving",customOptions);
+		FranzMarker.on('click', function() {
+		   // sends notification to your Google Analytics account
+		   ga('send', 'event', 'marker', 'click', 'Franz Joseph Glacier Marker');
+		});
+	var SharkMarker = L.marker([-43.4509250075837,170.17822265625], {icon: L.AwesomeMarkers.icon({icon: 'star',  prefix: 'glyphicon',markerColor: 'green'}) }).bindPopup("Franz Joseph Glacier",customOptions);
+		SharkMarker.on('click', function() {
+		   // sends notification to your Google Analytics account
+		   ga('send', 'event', 'marker', 'click', 'Great White Shark Cage Diving Marker');
+		}); 
+		
+		
+		
+		
+		
+//----------------------------------------------------------------------------------------------------------------------------------------
+		//Marker Cluster for Extra Markers 
+		
+		
+		var nzMarkerCluster = L.markerClusterGroup({maxClusterRadius: 80});
+		
+		nzMarkerCluster.addLayer(L.marker([-43.78522339239603,172.93407440185547], {icon: Marker1,}).addTo(map).bindPopup("Akaroa", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-39.093831306923654,177.93731689453125], {icon: Marker2,}).addTo(map).bindPopup("Surfing in Gizzy", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-39.30029918615028,174.0673828125], {icon: Marker3,}).addTo(map).bindPopup("Mount Taranaki", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-34.72200292037288,172.9306411743164], {icon: Marker4,}).addTo(map).bindPopup("Ninety Mile Beach", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-40.91922020055108,172.9584503173828], {icon:  Marker5,}).addTo(map).bindPopup("Abel Tasman National Park", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-39.28063641507674,175.56392669677734], {icon:  Marker6,}).addTo(map).bindPopup("Tongariro National Park", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-36.84849601948105,174.76228952407834], {icon:  Marker7,}).addTo(map).bindPopup("Auckland Sky Tower", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-37.5206186788693,177.18372344970703], {icon:  Marker8,}).addTo(map).bindPopup("White Island", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-35.23888953232258,174.13055419921872], {icon:  Marker9,}).addTo(map).bindPopup("Bay of Islands", customOptions));
+		nzMarkerCluster.addLayer(L.marker([-42.76213763409349,171.62189483642578], {icon:  Marker10,}).addTo(map).bindPopup("Arthur's Pass", customOptions));
+		nzMarkerCluster.addLayer(MarkerMilford);
+		nzMarkerCluster.addLayer(MountMarker);
+		nzMarkerCluster.addLayer(MarlMarker);
+		nzMarkerCluster.addLayer(FranzMarker);
+		nzMarkerCluster.addLayer(SharkMarker);
+	
+		map.addLayer(nzMarkerCluster);
+		
+		
+		
+		
+//----------------------------------------------------------------------------------------------------------------------------------------------------------		
+	//button for sidebar
+	 $('#sidebarbuttonID').on('click', function () {
+            sidebar.toggle();
+        });
+	
+	
+	//Information Window on load - #006DF0  blue colour used in icon
+	$(document).ready(swal({
+	title: "<b>Welcome to O!</b>",
+	allowOutsideClick: true,
+	html: true,
+	imageUrl: "../Data/circle_256by256.png",
+	animation: "slide-from-top",
+	text: "<span style= color:#006DF0><b>O is a living project.</b></span> <br><br> It has been so named for want of a better name hehe. Plus, it's easy to spell.. O is alive!!! ...by that I mean she is in constant upgrade mode. Her creator is always looking for new innovations to make her a better tool. <br><br> She also has some cool features to play with. <br> Tickle her and her map will move. <br> Touch her and she will do things that will make you go O!!! <br> Right click or hold her and she will give you choices.  <br> Shift and drag her and you can take a closer look. <br> Press the right button and you can even search her or change what she's wearing. <br><br> Please. If anything. <span style= color:#006DF0>Enjoy</span> her =)"}));
+	
+		
+        map.on('click', function () {
+            sidebar.hide();
+        })
+        sidebar.on('hide', function () {
+            console.log('Sidebar will be hidden.');
+        });
+        sidebar.on('hidden', function () {
+            console.log('Sidebar is hidden.');
+        });
+        L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
+            console.log('Close button clicked.');
+        });
+		
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
+		
+		//Geolocate control
+	L.control.locate({
+	position: 'topleft',
+		follow: false,
+		setView: false,
+		icon: 'fa fa-child',
+		strings: {
+			title: "Show me where I am, yo!"
+		},
+		keepCurrentZoomLevel: false,
+		locateOptions: {
+               maxZoom: 10
+}
+	}).addTo(map);
+	
+	
+	//tracking clicks on the map object
+	map.on('click', function() {
+		   // sends notification to your Google Analytics account
+		   ga('send', 'event', 'map', 'click', 'Map Click Event');
+		   console.log('map click event has propogated');
+		}); 
+	
+	
+    </script>
+</body>
+</html>
